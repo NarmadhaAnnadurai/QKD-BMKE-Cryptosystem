@@ -5,10 +5,10 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.util.Random;
 
-public class QBbwandcolorcorrect {
-
-    // ✅ Load and FORCE ARGB (prevents grayscale + preserves color)
-    public static BufferedImage loadImage(String path) throws Exception {
+public class QBbwandcolorcorrect
+    {
+        public static BufferedImage loadImage(String path) throws Exception
+        {
         BufferedImage original = ImageIO.read(new File(path));
 
         BufferedImage argb = new BufferedImage(
@@ -25,12 +25,14 @@ public class QBbwandcolorcorrect {
     }
 
     // Save image
-    public static void saveImage(BufferedImage image, String path) throws Exception {
+    public static void saveImage(BufferedImage image, String path) throws Exception
+        {
         ImageIO.write(image, "png", new File(path));
     }
 
-    // ✅ Deterministic key generation (same for encryption & decryption)
-    public static int[][] generateKey(String secret, int w, int h) throws Exception {
+    // ✅ Deterministic key generation 
+    public static int[][] generateKey(String secret, int w, int h) throws Exception
+        {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(secret.getBytes("UTF-8"));
 
@@ -50,8 +52,8 @@ public class QBbwandcolorcorrect {
         return key;
     }
 
-    // ✅ XOR encryption/decryption (with alpha preservation)
-    public static BufferedImage xorRGB(BufferedImage img, int[][] key) {
+        public static BufferedImage xorRGB(BufferedImage img, int[][] key)
+        {
         int w = img.getWidth();
         int h = img.getHeight();
 
@@ -71,18 +73,14 @@ public class QBbwandcolorcorrect {
                 r ^= key[y][x];
                 g ^= key[y][x];
                 b ^= key[y][x];
-
-                // ✅ Preserve FULL opacity (fix for dark image issue)
                 int newPixel = (0xFF << 24) | (r << 16) | (g << 8) | b;
-
                 out.setRGB(x, y, newPixel);
             }
         }
         return out;
     }
-
-    // ✅ Convert encrypted image to grayscale ONLY for display
-    public static BufferedImage toGray(BufferedImage img) {
+    public static BufferedImage toGray(BufferedImage img)
+        {
         int w = img.getWidth();
         int h = img.getHeight();
 
@@ -105,7 +103,8 @@ public class QBbwandcolorcorrect {
         return gray;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+        {
 
         String inputPath = "C:\\Users\\sk\\Pictures\\NARMADHA\\final original image\\roseresized.png";
 
@@ -128,8 +127,8 @@ public class QBbwandcolorcorrect {
         BufferedImage decrypted = xorRGB(encryptedColor, key);
 
         // Save results
-        saveImage(encryptedBW, "qkdoricolorcorrectrose_enc.png");     // Black & White encrypted image
-        saveImage(decrypted, "qkdoricolorcorrectrose_dec.png");    // Original color recovered
+        saveImage(encryptedBW, "qkdrose_enc.png");    
+        saveImage(decrypted, "qkdrose_dec.png");    
 
         System.out.println("✅ SUCCESS:");
         System.out.println("Encrypted image (B/W) saved as encrypted_bw.png");
